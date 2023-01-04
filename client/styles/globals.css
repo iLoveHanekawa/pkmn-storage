@@ -1,0 +1,13 @@
+@import url('https://fonts.googleapis.com/css2?family=Amita:wght@400;700&family=Croissant+One&family=Inter:wght@400;600;700&family=Kaushan+Script&family=Nunito:wght@400;600;700&family=Pacifico&family=Poppins:wght@400;600;700&family=Redressed&family=Roboto:wght@400;700&family=Sofia&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.navItem {
+    @apply text-4xl hover:scale-110 transition duration-500
+}
+
+.gridItem {
+    @apply rounded-md text-white text-2xl font-bold pt-16 hover:scale-105 transition duration-500 pl-10
+}
