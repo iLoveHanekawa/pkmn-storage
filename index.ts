@@ -21,7 +21,7 @@ const start = async(port: number, uri: string) => {
     try {
         app.listen(port, () => {
             console.log(`Server listening on http://localhost:${port}`)
-        })
+        }) 
         await connectDb(uri)
     } catch (error) {
         console.log(error);

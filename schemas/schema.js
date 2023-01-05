@@ -88,7 +88,7 @@ const mutation = new graphql_1.GraphQLObjectType({
                 level: { type: graphql_1.GraphQLInt, defaultValue: 5 }
             },
             resolve(parent, args) {
-                const pokemon = pokemonModel_1.default.create({ trainerId: args.trainerId, typeId: args.typeId, name: args.name });
+                const pokemon = pokemonModel_1.default.create({ trainerId: args.trainerId, typeId: args.typeId, name: args.name, level: args.level });
                 return pokemon;
             }
         },
@@ -120,6 +120,7 @@ const mutation = new graphql_1.GraphQLObjectType({
             },
             resolve(parent, args) {
                 const pokemon = pokemonModel_1.default.findByIdAndDelete(args.id);
+                return pokemon;
             }
         },
         deleteTrainer: {

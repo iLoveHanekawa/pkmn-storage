@@ -79,7 +79,7 @@ const mutation = new GraphQLObjectType({
                 level: { type: GraphQLInt, defaultValue: 5 }
             },
             resolve(parent, args) {
-                const pokemon = pokemonModel.create({ trainerId: args.trainerId, typeId: args.typeId, name: args.name})
+                const pokemon = pokemonModel.create({ trainerId: args.trainerId, typeId: args.typeId, name: args.name, level: args.level})
                 return pokemon
             }
         },
@@ -111,6 +111,7 @@ const mutation = new GraphQLObjectType({
             },
             resolve(parent, args) {
                 const pokemon = pokemonModel.findByIdAndDelete(args.id)
+                return pokemon
             }
         },
         deleteTrainer: {

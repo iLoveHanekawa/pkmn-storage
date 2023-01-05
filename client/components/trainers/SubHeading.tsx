@@ -7,7 +7,7 @@ type SubHeadingProps = {
 
 function SubHeading(props: SubHeadingProps) {
   return (
-    <div className = 'flex items-center gap-2 text-lg font-bold'>
+    <div className = 'flex items-center gap-2 text-lg pb-2 font-bold'>
         <props.icon className = 'text-2xl' />
         <div>{props.title}</div>
     </div>

@@ -1,7 +1,7 @@
 import { gql } from "@apollo/client";
 
 export const DELETE_TRAINER = gql`
-mutation($id:ID!){
+mutation deleteTrainer($id:ID!){
     deleteTrainer(id:$id){
         id
         name
@@ -19,7 +19,7 @@ mutation($id:ID!){
 }
 `
 export const GET_TRAINERS = gql`
-{
+query getTrainers{
     trainers{
         id
         name
@@ -55,7 +55,7 @@ mutation($name:String!, $badges:Int){
 `
 
 export const GET_TRAINER = gql`
-query($id:ID!){
+query getTrainer($id:ID!){
     trainer(id:$id){
         id
         name
@@ -68,18 +68,21 @@ query($id:ID!){
 `
 
 export const GET_POKEMONS = gql`
-{
+query getPokemons{
     pokemons{
         id
         level
         type{
+            id
             name
         }
         name
         trainer{
+            id
             name
             badges
             pokemons{
+                id
                 name
             }
         }
@@ -88,11 +91,13 @@ export const GET_POKEMONS = gql`
 `
 
 export const GET_POKEMON = gql`
-query($id:ID!){
+query getPokemon($id:ID!){
     pokemon(id:$id){
+        id
         name
         level
         trainer{
+            id
             name
             badges
         }
@@ -100,28 +105,46 @@ query($id:ID!){
 }
 `
 export const ADD_POKEMON = gql`
-mutation($trainerId:ID!, $typeId:ID!, $name:String!){
-    addPokemon(trainerId:$trainerId, typeId:$typeId, name:$name){
+mutation addPokemon($trainerId:ID!, $typeId:ID!, $name:String!, $level:Int!){
+    addPokemon(trainerId:$trainerId, typeId:$typeId, name:$name, level:$level){
+        id
         name
         type{
+            id
             name
         }
         level
         trainer{
+            pokemons{
+                id
+                name
+            }
+            badges
+            id
             name
         }
     }
 }
 `
 export const DELETE_POKEMON = gql`
-mutation($id:ID!){
+mutation deletePokemon($id:ID!){
     deletePokemon(id:$id){
         id
         name
         level
         trainer{
+            badges
+            id
             name
             pokemons{
+                id
+                name
+            }
+        }
+        type{
+            id
+            pokemons{
+                id
                 name
             }
         }
@@ -139,11 +162,17 @@ mutation($name:String!){
 export const ADD_LEVEL = gql`
 mutation($id:ID!, $increment:Int!){
     addLevel(id:$id, increment:$increment){
+      id
+      type{
+        id
+      }
       name
       level
       trainer{
+        id
         name
         pokemons{
+          id
           name
           level
         }
@@ -166,14 +195,16 @@ mutation($id:ID!, $increment:Int!){
 }
 `
 export const GET_TYPES = gql`
-{
+query getTypes{
     types{
         id
         name
         pokemons{
+            id
             level
             name
             trainer{
+                id
                 name
             }
         }

@@ -1,7 +1,6 @@
 import Link from "next/link"
-import { MdCatchingPokemon, MdEdit, MdEditNote, MdOutlineUpdate, MdUpdate } from 'react-icons/md'
+import { MdCatchingPokemon } from 'react-icons/md'
 import { GiHoodie, GiSmallFire } from 'react-icons/gi'
-import { RxUpdate } from 'react-icons/rx'
 import { FaHome } from 'react-icons/fa'
 import { useRouter } from "next/router"
 import React from "react"
@@ -16,7 +15,6 @@ function NavBar() {
         <Link href={'/trainers'}><GiHoodie className = {`navItem ${'/trainers' === path? 'text-white': 'text-black'}`} /></Link>
         <Link href={'/pokemons'}><MdCatchingPokemon className = {`navItem ${'/pokemons' === path? 'text-white': 'text-black'}`} /></Link>
         <Link href={'/types'}><GiSmallFire className = {`navItem ${'/types' === path? 'text-white': 'text-black'}`} /></Link>
-        <Link href={'/update'}><MdEdit className = {`navItem ${'/update' === path? 'text-white': 'text-black'}`} /></Link>
     </div>
   )
 }
