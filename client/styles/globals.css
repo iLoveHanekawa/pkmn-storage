@@ -9,5 +9,5 @@
 }
 
 .gridItem {
-    @apply rounded-md text-white text-2xl font-bold pt-16 hover:scale-105 transition duration-500 pl-10
+    @apply rounded-md text-white tracking-wider italic uppercase font-bold pt-10 hover:scale-105 transition duration-500 pl-10
 }

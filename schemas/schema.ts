@@ -118,8 +118,12 @@ const mutation = new GraphQLObjectType({
             args: {
                 id: { type: new GraphQLNonNull(GraphQLID) }
             },
-            resolve(parent, args) {
-                const trainer = trainerModel.findByIdAndDelete(args.id)
+            async resolve(parent, args) {
+                const trainer: any = await trainerModel.findByIdAndDelete(args.id)
+                const pokemons: any = await pokemonModel.find({ trainerId: trainer._id })
+                pokemons.forEach(async (value: { _id: string}) => {
+                    await pokemonModel.findOneAndDelete({ _id: value._id })
+                })
                 return trainer
             }
         },

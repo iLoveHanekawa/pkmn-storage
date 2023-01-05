@@ -1,4 +1,13 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -119,8 +128,14 @@ const mutation = new graphql_1.GraphQLObjectType({
                 id: { type: new graphql_1.GraphQLNonNull(graphql_1.GraphQLID) }
             },
             resolve(parent, args) {
-                const trainer = trainerModel_1.default.findByIdAndDelete(args.id);
-                return trainer;
+                return __awaiter(this, void 0, void 0, function* () {
+                    const trainer = yield trainerModel_1.default.findByIdAndDelete(args.id);
+                    const pokemons = yield pokemonModel_1.default.find({ trainerId: trainer._id });
+                    pokemons.forEach((value) => __awaiter(this, void 0, void 0, function* () {
+                        yield pokemonModel_1.default.findOneAndDelete({ _id: value._id });
+                    }));
+                    return trainer;
+                });
             }
         },
         deleteType: {
