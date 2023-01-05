@@ -152,11 +152,13 @@ mutation($id:ID!, $increment:Int!){
   }
 `
 export const ADD_BADGE = gql`
-mutation($id:ID!, $increment:Int){
+mutation($id:ID!, $increment:Int!){
     addBadge(id:$id, increment:$increment){
+        id
         name
         badges
         pokemons{
+            id
             name
             level
         }

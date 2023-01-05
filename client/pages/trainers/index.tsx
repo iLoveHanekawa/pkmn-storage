@@ -1,11 +1,13 @@
 import React from 'react'
 import { useQuery, useMutation } from '@apollo/client'
-import { GET_TRAINERS, DELETE_TRAINER } from '../../queries/query'
-import { MdCatchingPokemon, MdOutlineDeleteOutline } from 'react-icons/md'
+import { GET_TRAINERS, DELETE_TRAINER, ADD_BADGE, GET_TRAINER } from '../../queries/query'
+import { MdAdd, MdCatchingPokemon, MdOutlineDeleteOutline } from 'react-icons/md'
+import { MdEdit } from 'react-icons/md'
 import { SlBadge } from 'react-icons/sl'
 import Title from '../../components/trainers/Title'
 import SubHeading from '../../components/trainers/SubHeading'
 import Pokemon from '../../components/trainers/Pokemon'
+import { FiMinus } from 'react-icons/fi'
 
 type TrainerType = { 
   id: string
@@ -22,9 +24,23 @@ type TrainerType = {
 function Trainers() {
 
   const { data, loading, error } = useQuery(GET_TRAINERS)
-  const [ idForDelete, setIdForDelete ] = React.useState<null | string>()
-  const [mutate, { data: mutatedData, loading: mutatedLoading, error: mutatedError }] = useMutation(DELETE_TRAINER, { 
-    variables: { "id": idForDelete }, 
+  const [ idForMutate, setIdForMutate ] = React.useState<null | string>()
+
+  const [mutateBadgeAdd] = useMutation(ADD_BADGE, { variables: {"id": idForMutate, "increment": 1 },
+    update(cache, { data }){
+      const { trainers } = cache.readQuery({
+        query: GET_TRAINERS
+      }) as { trainers: { id: string, badges: number }[] }
+      cache.writeQuery({
+        query: GET_TRAINERS,
+        data: {
+          trainers: trainers.map(val => val.id === idForMutate? {...val, badges: val.badges + 1}: val)
+        }
+      })
+  }})
+
+  const [mutateDel] = useMutation(DELETE_TRAINER, { 
+    variables: { "id": idForMutate }, 
     update(cache, { data }) {
         const { trainers } = cache.readQuery({
             query: GET_TRAINERS
@@ -40,12 +56,31 @@ function Trainers() {
       }
   })    
 
-  const mutationHandler = async(id: string) => {
-    await mutate()
+  const [mutateMinusBadge] = useMutation(ADD_BADGE, { variables: { "id": idForMutate, "increment": -1 },
+    update(cache, { data }) {
+      const { trainers } = cache.readQuery({
+        query: GET_TRAINERS
+      }) as { trainers: { id: string, badges: number }[]}
+      cache.writeQuery({
+        query: GET_TRAINERS,
+        data: {
+          trainers: trainers.map(val => val.id === idForMutate? {...val, badges: val.badges - 1 }: val)
+        }
+      })
+    }
+  })
+
+  const delMutationHandler = async() => {
+    await mutateDel()
+  }
+  const addBadgeMutationHandler = async() => {
+    await mutateBadgeAdd()
   }
 
-  console.log(data);
-  
+  const subBadgeMutationHandler = async() => {
+    await mutateMinusBadge()
+  }
+
   if(loading) return <div>Loading...</div>
   else
   return (
@@ -56,20 +91,20 @@ function Trainers() {
           <div className = 'flex items-end text-gray-600'>
             <div className = 'text-3xl font-bold italic w-full flex items-center gap-3 tracking-wide'>
               {value.name}
-              <MdOutlineDeleteOutline onClick = {() => {
-                if(!idForDelete) setIdForDelete(value.id)
-                else setIdForDelete(null)
-              }} className = 'ml-3 cursor-pointer' />
-              {value.id === idForDelete && <div className = 'flex self-end gap-1 items-center text-lg'>
-                  <div className = 'ml-5 mr-2 text-xl text-gray-500'>Confirm deletion?</div>
-                  <button onClick = {() => {mutationHandler(value.id)}} className = 'bg-green-300 -skew-x-12 px-3 text-white rounded-l-full'>Yes</button>
-                  <button onClick = {() => {setIdForDelete(null)}} className = 'bg-red-300 -skew-x-12 px-3 text-white rounded-r-full'>No</button>
-              </div>}
+              {idForMutate === value.id?<MdAdd onClick = {() => {setIdForMutate(null)}} className = 'rotate-45 cursor-pointer ml-3 text-4xl'/>: <MdEdit onClick = {() => {setIdForMutate(value.id)}} className = 'ml-3 cursor-pointer' />}
+              {idForMutate === value.id && <MdOutlineDeleteOutline onClick = {() => {
+                delMutationHandler()
+              }} className = 'ml-3 cursor-pointer' />}
+              
               <hr />
             </div>
           </div>
           <div className = 'flex flex-col my-5'>
-            <SubHeading title = {'Badges'} icon = {SlBadge} />
+            <div className = 'flex items-center gap-3'>
+              <SubHeading title = {'Badges'} icon = {SlBadge} />
+              {value.id === idForMutate && <MdAdd onClick = {() => {addBadgeMutationHandler()}} className = 'cursor-pointer text-lg' />}
+              {value.id === idForMutate && <FiMinus onClick = {() => {subBadgeMutationHandler()}} className = 'cursor-pointer text-lg' />}
+            </div>
             <div className = 'ml-6 mt-1 text-gray-400'>
               {value.badges} badges
             </div>
